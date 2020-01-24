@@ -35,7 +35,7 @@ export default class MovieList extends Component {
   //         this.getMovies(nextProps.filters);
   //   }
   // }
-
+  
   componentDidUpdate(prevProps) {
     console.log("componentDidUpdate", "prevProps", prevProps);
     if (this.props.filters.sort_by !== prevProps.filters.sort_by) {
