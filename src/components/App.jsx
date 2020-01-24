@@ -1,93 +1,65 @@
 import React from "react";
-import { moviesData } from "../moviesData.js";
-import MovieItem from "./MovieItem";
-// const title ="Hello ReactWarriors!";
+import Filters from "./Filters/Filters";
+import MoviesList from "./Movies/MoviesList";
 
-// UI=fn(state);
-
-class App extends React.Component {
+export default class App extends React.Component {
   constructor() {
     super();
+
     this.state = {
-      movies: moviesData,
-      moviesWillWatch: []
-    };
+      filters: {
+        sort_by: "popularity.desc"
+      },
+      page: 1
+    }
   }
 
-  removeMovieById = id => {
-    const updateMovies = this.state.movies.filter(function(movie) {
-      return movie.id !== id;
-    });
-    //  console.log(updateMovies.length);
-    // this.state.movies=updateMovies;
-    this.setState({
-      movies: updateMovies
-    });
+  onChangeFilters = event => {
+    const value = event.target.value;
+    const name = event.target.name;
+    this.setState(prevState => ({
+      filters: {
+        ...prevState.filters,
+        [name]: value
+      }
+    }));
   };
 
-  addMovieToWillWatch = movie => {
-    console.log("movie", movie);
-    const updateMoviesWillWatch = [...this.state.moviesWillWatch];
-    updateMoviesWillWatch.push(movie);
+  onChangePage = page => {
     this.setState({
-      moviesWillWatch: updateMoviesWillWatch
-    });
-  };
-
-  removeMovieFromWillWatch = id => {
-    const updateMoviesWillWatch = this.state.moviesWillWatch.filter(function(
-      movie
-    ) {
-      return movie.id !== id;
-    });
-    //  console.log(updateMovies.length);
-    // this.state.movies=updateMovies;
-    this.setState({
-      moviesWillWatch: updateMoviesWillWatch
-    });
-  };
+      // page: page
+      page
+    })
+  }
 
   render() {
-    // console.log(this);
-    console.log("render");
+    const { filters, page } = this.state;
     return (
       <div className="container">
-        <div className="row">
-          <div className="col-9">
-            <div className="row">
-              {this.state.movies.map(movie => {
-                return (
-                  <div className="col-6" key={movie.id}>
-                    <MovieItem
-                      item={movie}
-                      removeMovieById={this.removeMovieById}
-                      addMovieToWillWatch={this.addMovieToWillWatch}
-                      removeMovieFromWillWatch={this.removeMovieFromWillWatch}
-                    />
-                  </div>
-                );
-              })}
+        <div className="row mt-4">
+          <div className="col-4">
+            <div className="card" style={{ width: "100%" }}>
+              <div className="card-body">
+                <h3>Фильтры:</h3>
+                <Filters 
+                  page={page}
+                  filters={filters} 
+                  onChangeFilters={this.onChangeFilters}
+                  onChangePage={this.onChangePage}
+                  onChangePage={this.onChangePage}
+                  />
+              </div>
             </div>
           </div>
-          <div className="col-3">
-            <p>Movies will watch: {this.state.moviesWillWatch.length} </p>
-            <ul className="list-group">
-              {this.state.moviesWillWatch.map(movie => {
-                return (
-                  <li className="list-group-item" key={movie.id}>
-                    <div className="d-flex justify-content-between">
-                      <p>{movie.title}</p>
-                      <p>{movie.vote_average}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+          <div className="col-8">
+            <MoviesList 
+              filters={filters}
+              page={page}
+              onChangePage={this.onChangePage}
+              />
           </div>
         </div>
       </div>
     );
   }
 }
-
-export default App;
